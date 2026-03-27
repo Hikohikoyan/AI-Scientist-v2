@@ -30,6 +30,9 @@ AVAILABLE_LLMS = [
     "o1-mini-2024-09-12",
     "o3-mini",
     "o3-mini-2025-01-31",
+    # OpenClaw models
+    "iflow/qwen3-max",
+    "qwen-portal/coder-model",
     # DeepSeek Models
     "deepseek-coder-v2-0724",
     "deepcoder-14b",
@@ -70,6 +73,10 @@ AVAILABLE_LLMS = [
     "ollama/deepseek-r1:32b",
     "ollama/deepseek-r1:70b",
     "ollama/deepseek-r1:671b",
+
+    # OpenClaw custom models (no API key required - uses local OpenClaw runtime)
+    "iflow/qwen3-max",
+    "qwen-portal/coder-model",
 ]
 
 
@@ -181,6 +188,16 @@ def get_batch_responses_from_llm(
             stop=None,
         )
         content = [r.message.content for r in response.choices]
+        new_msg_history = [
+            new_msg_history + [{"role": "assistant", "content": c}] for c in content
+        ]
+    elif model.startswith("iflow/") or model.startswith("qwen/"):
+        # OpenClaw models - handled through local execution, no API calls needed
+        # The actual model invocation happens through OpenClaw's internal mechanisms
+        # For now, we'll use a placeholder that will be handled by the wrapper script
+        new_msg_history = msg_history + [{"role": "user", "content": msg}]
+        # This will be intercepted by the OpenClaw wrapper script
+        content = ["[OPENCLAW_MODEL_PLACEHOLDER]"] * n_responses
         new_msg_history = [
             new_msg_history + [{"role": "assistant", "content": c}] for c in content
         ]
@@ -537,6 +554,15 @@ def create_client(model) -> tuple[Any, str]:
             openai.OpenAI(
                 api_key=os.environ["GEMINI_API_KEY"],
                 base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+            ),
+            model,
+        )
+    elif model.startswith("iflow/") or model.startswith("qwen/"):
+        print(f"Using OpenClaw API with model {model}.")
+        return (
+            openai.OpenAI(
+                api_key=os.environ.get("OPENCLAW_API_KEY", "dummy-key-for-openclaw"),
+                base_url=os.environ.get("OPENCLAW_API_BASE", "http://localhost:8080/v1"),
             ),
             model,
         )
