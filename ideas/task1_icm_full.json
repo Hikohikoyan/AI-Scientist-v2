@@ -1,0 +1,24 @@
+[
+    {
+        "Name": "icm_full_implementation",
+        "Title": "Interface Cognitive Map 好奇性驱动探索算法完整实现",
+        "Short Hypothesis": "ICM框架通过好奇性量化、变化检测、认知地图和上下文感知，使Agent能在未知游戏界面上自主探索并发现所有可交互元素。",
+        "Related Work": "Maestro (Smart Waiting), CASIA VideoNIAH (合成干扰测试), ThinkStream (思考链)",
+        "Abstract": "在SomaTrace游戏中实现完整的Interface Cognitive Map (ICM)框架，包含5个核心模块，在未知游戏界面上进行端到端验证。",
+        "Experiments": [
+            "1. CuriosityModule: 基于贝叶斯不确定性的好奇性评分，输出每个区域的探索优先级分数 (0~1)",
+            "2. ChangeDetectionModule: 点击后等待3秒，对比前后截图的像素级差异，如果差异>10%认为成功，否则失败",
+            "3. CognitiveMap: 用字典维护界面元素图谱，key=元素ID，value={bbox, element_type, state, interaction_history, parent_page}",
+            "4. ExplorationPolicy: UCB1算法平衡探索/利用，公式: UCB=均值+sqrt(2*ln(t)/n)，每步选择一个区域点击",
+            "5. ContextModule: 用CNN特征提取器对每个元素截图提取embedding，跨页面匹配相同元素",
+            "6. ExplorerAgent: 主循环-感知→好奇性评分→UCB选择→点击执行→变化检测→更新地图→判断完成",
+            "7. 在5种不同游戏界面上测试，每种测试10次，测量平均步数和成功率",
+            "8. 对比3个基线: (a)随机选择 (b)基于视觉显著性的探索 (c)ICM完整方法"
+        ],
+        "Risk Factors and Limitations": [
+            "复杂界面需要层次化抽象避免状态爆炸",
+            "动画导致误判需要加权平均而非单次diff",
+            "跨页面元素匹配依赖embedding质量"
+        ]
+    }
+]
