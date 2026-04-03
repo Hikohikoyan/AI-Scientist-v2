@@ -497,10 +497,14 @@ def create_client(model) -> tuple[Any, str]:
         ), model
     elif "gpt" in model:
         print(f"Using OpenAI API with model {model}.")
-        return openai.OpenAI(), model
+        return openai.OpenAI(
+            base_url=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        ), model
     elif "o1" in model or "o3" in model:
         print(f"Using OpenAI API with model {model}.")
-        return openai.OpenAI(), model
+        return openai.OpenAI(
+            base_url=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        ), model
     elif model == "deepseek-coder-v2-0724":
         print(f"Using OpenAI API with {model}.")
         return (
