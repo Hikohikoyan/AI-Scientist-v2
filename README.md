@@ -87,6 +87,7 @@ Our code can optionally use a Semantic Scholar API Key (`S2_API_KEY`) for higher
 Ensure you provide the necessary API keys as environment variables for the models you intend to use. For example:
 ```bash
 export OPENAI_API_KEY="YOUR_OPENAI_KEY_HERE"
+export OPENAI_BASE_URL="YOUR_OPENAI_BASE_URL_HERE"  # e.g. https://api.openai.com/v1
 export S2_API_KEY="YOUR_S2_KEY_HERE"
 # Set AWS credentials if using Bedrock
 # export AWS_ACCESS_KEY_ID="YOUR_AWS_ACCESS_KEY_ID"
